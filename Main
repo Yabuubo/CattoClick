@@ -1,0 +1,125 @@
+package cattoclick;
+
+
+import javax.swing.*; //für buttons
+
+import org.w3c.dom.events.EventTarget;
+import org.w3c.dom.events.MouseEvent; //für maus wenn ich klicke oder so
+import org.w3c.dom.views.AbstractView;
+import java.awt.image.*;
+
+import java.awt.Robot;
+import java.awt.AWTException;
+import java.io.*;
+import java.awt.*;
+import java.awt.event.*;
+
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
+
+public class Main {
+
+	private static boolean running = false; //boolean wird erstellt und wert zugewiesen
+
+	public static void main(String[] args) throws AWTException 
+	{
+		
+        //Main Frame wird gemacht
+        JFrame frame = new JFrame("CattoClick");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//zum schließen des frames
+        frame.setSize(350, 200);//größe des frames
+
+        
+        //menü
+        JMenuBar menuBar = new JMenuBar();//erstellt menü
+        JMenu fileMenu = new JMenu("File");//nennt den ersten punkt file
+        JMenuItem helpItem = new JMenuItem("help");//erstellt help unter file
+        fileMenu.add(helpItem);//fügt helpItem hinzu
+        fileMenu.addSeparator();//separiert
+        menuBar.add(fileMenu);//file wird geadded
+
+        //Panel mit start button
+        JPanel panel = new JPanel();//panel für button wird erstellt
+        JButton button = new JButton("start");
+        panel.add(button);
+        
+        //stop button
+        JPanel panelStop = new JPanel();//panel für button wird erstellt
+        JButton buttonStop = new JButton("stop");
+        panel.add(buttonStop);
+
+        Robot robot = new Robot();//robot der mausklick simuliert
+
+        //Textfeld
+        JPanel textFieldPanel = new JPanel();//erstellt panel
+        JTextField field = new JTextField("1000");
+        textFieldPanel.add(field);
+        
+        //TODO change icon to cat
+        //TODO implement background image 
+        //TODO implement something that listens to key, to start and stop the autoclicker
+        
+        
+        // Add action to the button
+        button.addActionListener(new ActionListener() 
+        {
+            public void actionPerformed(ActionEvent e) 
+            {
+            	int getValue = Integer.parseInt(field.getText());//parse um string in einen integer zu machen
+            	
+            	
+            	
+            	Thread t = new Thread(new Runnable()  //thread wird erstellt
+            	{	
+					public void run() 
+					{
+						running = true;
+						
+		            	while(running) 
+		            	{
+		                	robot.delay(getValue);
+		                	robot.mousePress(InputEvent.BUTTON1_DOWN_MASK); //linke maustaste wird gedrückt
+		                	robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);//linke maustaste wird losgelassen
+		                	System.out.println("Klick");
+		                }						
+						
+					}
+				});
+            	t.start();
+            	     	
+            }
+        });
+        
+                
+        //Add action to the stop button
+        buttonStop.addActionListener(new ActionListener() 
+        {
+			public void actionPerformed(ActionEvent e) 
+			{
+				running = false;//running wird auf false gesetzt wenn button geklickt wird
+            	System.out.println("KlickStop");
+				
+			}
+            
+        });
+
+        JPanel textPanel = new JPanel();//erstellt panel
+        JLabel label = new JLabel("Type velocity in milliseconds");
+        textPanel.add(label);
+           
+        
+        // Set layout for the main frame
+        frame.setLayout(new BorderLayout());
+        frame.setJMenuBar(menuBar);
+        frame.add(textPanel, BorderLayout.PAGE_START);//textpanel wird hinzugefügt und in center koordiniert
+        frame.add(panel, BorderLayout.SOUTH);//start button wird hinzugefügt
+        frame.add(panelStop,BorderLayout.LINE_START);//stop button wird hinzugefügt
+        frame.add(textFieldPanel, BorderLayout.CENTER);//textfield wird hinzugefügt               
+        frame.setVisible(true);
+        
+        
+        
+	}
+
+}
